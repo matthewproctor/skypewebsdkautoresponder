@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+    <title>Skype Web SDK Auto Responder</title>
+    <!-- SkypeWeb library requires IE compatible mode turned off -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- the jQuery library written by John Resig (MIT license) -->
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.1.min.js"></script>
+
+    <!-- SkypeWebSDK Bootstrap Libray -->
+    <script src="https://swx.cdn.skype.com/shared/v/1.1.23.0/SkypeBootstrap.min.js"></script>
+
+    <!-- Load Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- Javascript used in this demonstration -->
+    <script src="index.js"></script>
+
+    <!-- Styles for this demonstration -->
+    <link href="index.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <h3>Skype Web SDK Auto Responder</h2>
+
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-lg-6">
+
+                <div id="loginbox" class="loginbox input-group">
+                    <div>Login</div>
+                    <div id="address" contenteditable="true" class="input form-control"></div>
+                    <div>Password</div>
+                    <input type="password" id="password" name="password" class="input form-control" />
+                    <div id="signin" class="button">Sign In</div>
+                </div>
+                <div id="chatfunctions">
+                    <div class="input-group">
+                        <div id="the_message" contenteditable="true" class="input text-nowrap form-control"></div>
+                        <div id="send_message" class="input-group-addon btn btn-primary">Send</div>
+                    </div>
+                    <div id="startChat" class="button">Start chatService</div>
+                    <div id="add_bob" class="button"><img src="./images/Bob.png" height="16" /> Add Bob</div>
+                    <div id="add_ella" class="button"><img src="./images/Ella.png" height="16" /> Add Ella</div>
+                    <div id="stopChat" class="button">Stop chatService</div>
+                    <div id="signout" class="button">Sign Out</div>
+
+					<br>
+					<b>Response Message:</b>
+					<p>Enter a message below to automatically respond to the incoming IM. If you don't wish to respond, simply leave this field blank.</p>
+                    <div class="input-group">
+                        <div id="response_message" contenteditable="true" class="input text-nowrap form-control">Hi! Thanks for sending me a message. I'm not currently using this Skype for Business account, so please reach out to me at sip:matthew@telewebica.com.au instead.</div>
+                    </div>
+					<br>
+					<b>Forward original message to:</b>
+					<p>You can also choose to automatically forward the incoming message to a different account, by entering it in below. It won't create a conversation with the original participant, but will include their details, so that you can start a new conversation with them if you wish. If you don't want the message to be forwarded, simply leave this blank.</p>
+                    <div class="input-group">
+                        <div id="response_message" contenteditable="true" class="input text-nowrap form-control">matthew@telewebica.com.au</div>
+                    </div>
+
+
+				</div>
+
+                <div class="small">
+                    <b>Event Logs</b><br />
+                    <div id="logging_box" contenteditable="false" class="code"></div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-lg-6">
+                <div id="chat_window" contenteditable="false" class=""></div>
+            </div>
+        </div>
+        
+    </div>
+
+</body>
+</html>

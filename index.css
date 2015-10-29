@@ -1,0 +1,50 @@
+.input {
+border: 1pt solid gray;
+padding: 2pt;
+overflow: hidden;
+white-space: nowrap;
+}
+
+.button {
+border: 1pt solid gray;
+cursor: pointer;
+padding: 2pt 5pt;
+display: inline-block;
+}
+
+.button:hover {
+    background: lightgray;
+}
+
+.signinframe > .button {
+    margin-top: 8pt;
+}
+
+.userdetails {
+    border: 1pt solid lightgray;
+    padding:5px;
+}
+
+.logoutbox, .loginbox {
+    padding: 5px 0 10px 0;
+}
+
+#logging_box {
+    overflow-y: scroll; height:200px;
+}
+
+.msgbox_incoming {
+    height:34px;
+    background-color:#DFF0D8;
+    -webkit-border-radius: 1px;-moz-border-radius: 1px;border-radius: 1px;
+    border:1px solid #808080;
+    padding: 5px;
+}
+
+.msgbox_outgoing {
+    height:34px;
+    background-color:#d8f0ec;
+    -webkit-border-radius: 1px;-moz-border-radius: 1px;border-radius: 1px;
+    border:1px solid #808080;
+    padding: 5px;
+}
