@@ -4,6 +4,8 @@
     <title>Skype Web SDK Auto Responder</title>
     <!-- SkypeWeb library requires IE compatible mode turned off -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Matthew Proctor, Melbourne, Australia">
+	<link rel="canonical" href="https://www.matthewproctor.com" />
 
     <!-- the jQuery library written by John Resig (MIT license) -->
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.1.min.js"></script>
@@ -16,7 +18,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Javascript used in this demonstration -->
-    <script src="index.js"></script>
+    <script src="index.js?13"></script>
 
     <!-- Styles for this demonstration -->
     <link href="index.css" rel="stylesheet">
@@ -24,10 +26,10 @@
 <body>
 
     <div class="container">
-        <h3>Skype Web SDK Auto Responder</h2>
+        <h3>Skype Web SDK Auto Responder</h3>
 
         <div class="row">
-            <div class="col-md-6 col-sm-6 col-lg-6">
+            <div class="col-md-12 col-sm-12 col-lg-12">
 
                 <div id="loginbox" class="loginbox input-group">
                     <div>Login</div>
@@ -37,43 +39,45 @@
                     <div id="signin" class="button">Sign In</div>
                 </div>
                 <div id="chatfunctions">
-                    <div class="input-group">
-                        <div id="the_message" contenteditable="true" class="input text-nowrap form-control"></div>
-                        <div id="send_message" class="input-group-addon btn btn-primary">Send</div>
-                    </div>
+                    <br>
                     <div id="startChat" class="button">Start chatService</div>
-                    <div id="add_bob" class="button"><img src="./images/Bob.png" height="16" /> Add Bob</div>
-                    <div id="add_ella" class="button"><img src="./images/Ella.png" height="16" /> Add Ella</div>
                     <div id="stopChat" class="button">Stop chatService</div>
                     <div id="signout" class="button">Sign Out</div>
 
-					<br>
-					<b>Response Message:</b>
-					<p>Enter a message below to automatically respond to the incoming IM. If you don't wish to respond, simply leave this field blank.</p>
+                    <br>
+                    <b>Response Message:</b>
+                    <p>Enter a message below to automatically respond to the incoming IM. If you don't wish to respond, simply leave this field blank.</p>
                     <div class="input-group">
-                        <div id="response_message" contenteditable="true" class="input text-nowrap form-control">Hi! Thanks for sending me a message. I'm not currently using this Skype for Business account, so please reach out to me at sip:matthew@telewebica.com.au instead.</div>
+                        <textarea style="width:700px" id="response_message" class="form-control" rows="3">Hi! Thanks for sending me a message. I'm not currently using this Skype for Business account, so please reach out to me at sip:matthew@telewebica.com.au instead. This is an automated message, I'm not really here. :-)</textarea>
                     </div>
-					<br>
-					<b>Forward original message to:</b>
-					<p>You can also choose to automatically forward the incoming message to a different account, by entering it in below. It won't create a conversation with the original participant, but will include their details, so that you can start a new conversation with them if you wish. If you don't want the message to be forwarded, simply leave this blank.</p>
+                    <br>
+                    <b>Forward original message to:</b>
+                    <p>
+                        You can also choose to automatically forward the incoming message to a different account, by entering it in below.
+                        It won't create a conversation with the original participant, but will include their details,
+                        so that you can start a new conversation with them if you wish.
+                        If you don't want the message to be forwarded, simply leave this blank.
+                    </p>
                     <div class="input-group">
-                        <div id="response_message" contenteditable="true" class="input text-nowrap form-control">matthew@telewebica.com.au</div>
+                        <textarea style="width:700px" rows="1" id="forward_address" class="form-control">matthew@telewebica.com.au</textarea>
                     </div>
 
 
-				</div>
-
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-lg-12">
                 <div class="small">
                     <b>Event Logs</b><br />
                     <div id="logging_box" contenteditable="false" class="code"></div>
                 </div>
-            </div>
 
-            <div class="col-md-6 col-sm-6 col-lg-6">
-                <div id="chat_window" contenteditable="false" class=""></div>
+                <div class="col-md-6 col-sm-6 col-lg-6">
+                    <div id="chat_window" contenteditable="false" class=""></div>
+                </div>
             </div>
         </div>
-        
     </div>
 
 </body>

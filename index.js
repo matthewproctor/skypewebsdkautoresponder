@@ -1,7 +1,3 @@
-// Enable this value to automatically start this javascript application - it requires the password to be hardcoded
-// which isn't safe, however if you're running it on an internal system pointing to an internal server, then you may be forgiven :)
-var autoStart = true;
-
 function log(texttolog) {
     var d = new Date();
     var time = padLeft(d.getHours(), 2) + ":" + padLeft(d.getMinutes(), 2) + ":" + padLeft(d.getSeconds(), 2) + ":" + padLeft(d.getMilliseconds(), 3);
@@ -72,20 +68,23 @@ $(function () {
     var Application
     var client;
     var conversation;
+    var conversation2;
 
     Skype.initialize({
         apiKey: 'SWX-BUILD-SDK',
     }, function (api) {
         Application = api.application;
         client = new Application();
+        log("Client Created");
     }, function (err) {
         log('some error occurred: ' + err);
-    });
-
-    log("Client Created");
+    });    
 
     // when the user clicks the "Sign In" button
     $('#signin').click(function () {
+        sign_in();
+    });
+    function sign_in() {
         $('#signin').hide();
         log('Signing in...');
         // and invoke its asynchronous "signIn" method
@@ -96,60 +95,17 @@ $(function () {
             log('Logged In Successfully');
             $('#loginbox').hide();
             $('#chatfunctions').show();
-
             //create a new conversation
             log("Creating a new Conversation");
             conversation = client.conversationsManager.createConversation();
-             
-            conversation.historyService.activityItems.added(function (newMsg) {
-                if (newMsg.type() == 'TextMessage') {
-                    var direction = newMsg.direction();
-                    log(newMsg.sender.displayName() + ' : ' + newMsg.text() + '');
-
-                    //look for a specific keyword in a message
-                    if (newMsg.text().toLowerCase().indexOf("knock") != -1) {
-                        log("Found keyword.");
-                        conversation.chatService.sendMessage("Who's there?").then(function () {
-                            log('Message sent.');
-                            $('#startChat').hide();
-                        }).then(null, function (error) {
-                            log('Error:' + error);
-                        });;
-                    }
-
-                    //display message in chat window
-                    addChatMessage(direction, newMsg.sender.displayName(), newMsg.text());
-                }
-            });
-
-
+            log("Ready");
         }).then(null, function (error) {
             // if either of the operations above fails, tell the user about the problem
             log(error || 'Oops, Something went wrong.');
             $('#signin').show()
         });
-    });
-
-    $('#add_bob').click(function () {
-        log('Adding the participant bob@productivecorporation.com');
-        conversation.addParticipant("sip:bob@productivecorporation.com").then(function () {
-            log('Bob added!');
-            $('#add_bob').hide();
-        }).then(null, function (error) {
-            log('Error:' + error);
-        });
-    });
-
-    $('#add_ella').click(function () {
-        log('Adding the participant ella@productivecorporation.com');
-        conversation.addParticipant("sip:ella@productivecorporation.com").then(function () {
-            log('Ella added!');
-            $('#add_ella').hide();
-        }).then(null, function (error) {
-            log('Error:' + error);
-        });
-    });
-
+    }
+   
     $('#send_message').click(function () {
         var the_message = $('#the_message').text();
         if (the_message != "") {
@@ -166,16 +122,103 @@ $(function () {
     });
 
     $('#startChat').click(function () {
+        start_chat();
+    });
+    function start_chat(){
         log('Starting chatService...');
         conversation.chatService.start().then(function () {
             log('chatService started!');
             $('#startChat').hide();
+
+            //Register a listener for incoming calls
+            log("Setting up listener for new conversations");
+            client.conversationsManager.conversations.added(function (conversation) {
+                log("Conversation invitation received");
+                if (conversation.chatService.accept.enabled()) {
+                    // this is an incoming IM call
+                    conversation.chatService.accept().then(function () {
+                        log("Accepted conversation invitation");
+
+                        // Add a listener for new messages
+                        log("Setting up listener for new messages");
+                        conversation.historyService.activityItems.added(function (newMsg) {
+                            if (newMsg.type() == 'TextMessage') {
+                                var direction = newMsg.direction();
+                                if (direction == "Incoming") {
+                                    var the_message = newMsg.text().toString().trim();
+                                    if (the_message == '') {
+                                        the_message = newMsg.html();
+                                    }
+
+                                    log(newMsg.sender.displayName() + ' : [' + the_message + ']');
+                                    var forward_address = $('#forward_address').val();
+                                    if (forward_address != '') {
+                                        send_instant_message(forward_address, 'Message from: ' + newMsg.sender.id() + ', Message:' + the_message + '')
+                                    }
+                                }
+                            }
+                        });
+
+                        // get the response message
+                        var response_message = $('#response_message').val();
+                        log("Sending back: " + response_message)
+                        conversation.selfParticipant.chat.state.when('Connected', function () {
+                            conversation.chatService.sendMessage(response_message).then(function () {
+                                log('Message sent.');
+                            }).then(null, function (error) {
+                                log('Error sending response:' + error);
+                            });;
+                        });
+                        
+                    }).then(null, function (error) {
+                        // failed to accept the invitation
+                        log('Error accepting invitation:' + error);
+                    });
+                    
+                }
+            });
+
         }).then(null, function (error) {
             log('Error:' + error);
         });
-    });
+    }
+
+    function send_instant_message(forward_address, the_message) {
+        log('Forwarding to: ' + forward_address);
+        log('Forwarding message: ' + the_message);
+        //create a new conversation
+        log("Forwarding: Creating a new Conversation");
+        conversation2 = client.conversationsManager.createConversation();
+        log("Forwarding: Starting chatService");
+        conversation2.chatService.start().then(function () {
+            log('Forwarding: chatService started!');
+            conversation2.addParticipant("sip:" + forward_address).then(function () {
+                log(forward_address + ' added!');
+                pause(1000);
+                log('Forwarding: Sending message: ' + the_message);
+                conversation2.chatService.sendMessage(the_message).then(function () {
+                    log('Forwarding: Message sent!');
+                    pause(1000);
+                    conversation2.chatService.stop().then(function () {
+                        log('Forwarding: chatService stopped.');
+                    }).then(null, function (error) {
+                        log('Forwarding: Error Stopping chatService:' + error);
+                    });
+                }).then(null, function (error) {
+                    log('Forwarding: Error Sending Message:' + error);
+                });
+            }).then(null, function (error) {
+                log('Forwarding: Error adding participant:' + error);
+            });
+        }).then(null, function (error) {
+            log('Forwarding: Error starting chatService' + error);
+        });
+    }
 
     $('#stopChat').click(function () {
+        stop_chat();
+    });
+    function stop_chat() {
         log('Stopping chatService...');
         conversation.chatService.stop().then(function () {
             log('chatService stopped.');
@@ -183,7 +226,7 @@ $(function () {
         }).then(null, function (error) {
             log('Error:' + error);
         });
-    });
+    }
 
     // when the user clicks on the "Sign Out" button
     $('#signout').click(function () {
@@ -204,5 +247,4 @@ $(function () {
                 log(error || 'Cannot Sign Out');
             });
     });
-
 });
